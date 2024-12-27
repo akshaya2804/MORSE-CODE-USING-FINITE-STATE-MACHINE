@@ -1,0 +1,58 @@
+module morse_tb;
+
+reg clk;
+reg rst;
+reg [3:0] alphabet;
+wire dot;
+wire dash;
+wire [7:0] output_alphabet; // New output signal
+
+morse_rtl dut (
+  .clk(clk),
+  .rst(rst),
+  .alphabet(alphabet),
+  .dot(dot),
+  .dash(dash)
+);
+
+// Convert Morse code to alphabet
+always @(posedge clk) begin
+  if (dot && !dash) begin
+    case (alphabet)
+      4'b0000: output_alphabet <= 8'h41; // A
+      4'b0001: output_alphabet <= 8'h42; // B
+      4'b0010: output_alphabet <= 8'h43; // C
+      4'b0011: output_alphabet <= 8'h44; // D
+      4'b0100: output_alphabet <= 8'h45; // E
+      4'b0101: output_alphabet <= 8'h46; // F
+      4'b0110: output_alphabet <= 8'h47; // G
+      4'b0111: output_alphabet <= 8'h48; // H
+      4'b1000: output_alphabet <= 8'h49; // I
+      4'b1001: output_alphabet <= 8'h4a; // J
+    endcase
+  end
+end
+
+initial begin
+  clk = 0;
+  rst = 1;
+  alphabet = 4'b0000; // A
+end
+
+always #5 clk = ~clk;
+
+initial begin
+  #10 rst = 0;
+  #20 alphabet = 4'b0001; // B
+  #40 alphabet = 4'b0010; // C
+  #60 alphabet = 4'b0011; // D
+  #80 alphabet = 4'b0100; // E
+  #100 alphabet = 4'b0101; // F
+  #120 alphabet = 4'b0110; // G
+  #140 alphabet = 4'b0111; // H
+  #160 alphabet = 4'b1000; // I
+  #180 alphabet = 4'b1001; // J
+  #200 $finish;
+end
+
+endmodule
