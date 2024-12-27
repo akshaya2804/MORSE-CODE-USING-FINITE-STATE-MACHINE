@@ -1,0 +1,207 @@
+module code_rtl(
+  input clk,
+  input rst,
+  input [3:0] alphabet,
+  output reg dot,
+  output reg dash
+);
+
+reg [3:0] state;
+reg [3:0] next_state;
+
+// Define the Morse code for each alphabet
+parameter A = 4'b0000; // dot-dash
+parameter B = 4'b0001; // dash-dot-dot-dot
+parameter C = 4'b0010; // dash-dot-dash-dot
+parameter D = 4'b0011; // dash-dot-dot
+parameter E = 4'b0100; // dot
+parameter F = 4'b0101; // dot-dot-dash-dot
+parameter G = 4'b0110; // dash-dash-dot
+parameter H = 4'b0111; // dot-dot-dot-dot
+parameter I = 4'b1000; // dot-dot
+parameter J = 4'b1001; // dot-dash-dash-dash
+
+always @(posedge clk or posedge rst) begin
+  if (rst) begin
+    state <= 0;
+  end else begin
+    state <= next_state;
+  end
+end
+
+always @(*) begin
+  // Default outputs
+  dot = 0;
+  dash = 0;
+  next_state = 0;
+
+  case (state)
+    0: begin
+      // Idle state
+      if (alphabet == A) begin
+        next_state = 1;
+      end else if (alphabet == B) begin
+        next_state = 3;
+      end else if (alphabet == C) begin
+        next_state = 8;
+      end else if (alphabet == D) begin
+        next_state = 12;
+      end else if (alphabet == E) begin
+        next_state = 15;
+      end else if (alphabet == F) begin
+        next_state = 16;
+      end else if (alphabet == G) begin
+        next_state = 20;
+      end else if (alphabet == H) begin
+        next_state = 23;
+      end else if (alphabet == I) begin
+        next_state = 27;
+      end else if (alphabet == J) begin
+        next_state = 29;
+      end else begin
+        next_state = 0; // Stay idle for invalid input
+      end
+    end
+    // Morse code for A (dot-dash)
+    1: begin
+      dot = 1;
+      next_state = 2;
+    end
+    2: begin
+      dash = 1;
+      next_state = 0;
+    end
+    // Morse code for B (dash-dot-dot-dot)
+    3: begin
+      dash = 1;
+      next_state = 4;
+    end
+    4: begin
+      dot = 1;
+      next_state = 5;
+    end
+    5: begin
+      dot = 1;
+      next_state = 6;
+    end
+    6: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for C (dash-dot-dash-dot)
+    8: begin
+      dash = 1;
+      next_state = 9;
+    end
+    9: begin
+      dot = 1;
+      next_state = 10;
+    end
+    10: begin
+      dash = 1;
+      next_state = 11;
+    end
+    11: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for D (dash-dot-dot)
+    12: begin
+      dash = 1;
+      next_state = 13;
+    end
+    13: begin
+      dot = 1;
+      next_state = 14;
+    end
+    14: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for E (dot)
+    15: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for F (dot-dot-dash-dot)
+    16: begin
+      dot = 1;
+      next_state = 17;
+    end
+    17: begin
+      dot = 1;
+      next_state = 18;
+    end
+    18: begin
+      dash = 1;
+      next_state = 19;
+    end
+    19: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for G (dash-dash-dot)
+    20: begin
+      dash = 1;
+      next_state = 21;
+    end
+    21: begin
+      dash = 1;
+      next_state = 22;
+    end
+    22: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for H (dot-dot-dot-dot)
+    23: begin
+      dot = 1;
+      next_state = 24;
+    end
+    24: begin
+      dot = 1;
+      next_state = 25;
+    end
+    25: begin
+      dot = 1;
+      next_state = 26;
+    end
+    26: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for I (dot-dot)
+    27: begin
+      dot = 1;
+      next_state = 28;
+    end
+    28: begin
+      dot = 1;
+      next_state = 0;
+    end
+    // Morse code for J (dot-dash-dash-dash)
+    29: begin
+      dot = 1;
+      next_state = 30;
+    end
+    30: begin
+      dash = 1;
+      next_state = 31;
+    end
+    31: begin
+      dash = 1;
+      next_state = 32;
+    end
+    32: begin
+      dash = 1;
+      next_state = 0;
+    end
+    default: begin
+      dot = 0;
+      dash = 0;
+      next_state = 0;
+    end
+  endcase
+end
+
+endmodule
